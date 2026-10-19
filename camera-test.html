@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>AR Studio | Camera Test</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111;
+  font-family: Arial, sans-serif;
+}
+
+video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #111;
+}
+
+.panel {
+  position: fixed;
+  z-index: 10;
+  left: 12px;
+  right: 12px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  background: rgba(240,232,255,.95);
+  color: #51447D;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+}
+
+button {
+  background: #8B72D4;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<video id="camera" autoplay muted playsinline></video>
+
+<div class="panel">
+  <strong>AR Studio Camera Test</strong>
+  <p id="status">
+    Tap Start Camera to begin.
+  </p>
+  <button id="start">Start Camera</button>
+</div>
+
+<script>
+const video = document.getElementById("camera");
+const status = document.getElementById("status");
+const button = document.getElementById("start");
+
+let stream;
+
+button.addEventListener("click", async () => {
+  try {
+    status.textContent = "Requesting camera access...";
+
+    if (!navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia) {
+      throw new Error("Camera API unavailable");
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: { ideal: "environment" }
+      }
+    });
+
+    video.srcObject = stream;
+    await video.play();
+
+    status.textContent =
+      "Camera is working! You should see your surroundings.";
+
+  } catch (error) {
+    console.error(error);
+
+    status.textContent =
+      "Camera error: " + error.message;
+  }
+});
+
+window.addEventListener("pagehide", () => {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+});
+</script>
+
+</body>
+</html>
