@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AR Studio | Photosynthesis Education</title>
+
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#10101B;
+  font-family:Arial,sans-serif;
+}
+
+a-scene {
+  position:fixed !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+}
+
+header {
+  position:fixed;
+  z-index:1000;
+  top:calc(12px + env(safe-area-inset-top));
+  left:12px;
+  right:12px;
+  padding:14px;
+  background:rgba(255,255,255,.95);
+  border:1px solid #DCCBFF;
+  border-radius:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.brand {
+  color:#51447D;
+  font-weight:800;
+}
+
+header a {
+  background:#8B72D4;
+  color:white;
+  padding:10px 12px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:13px;
+}
+
+.panel {
+  position:fixed;
+  z-index:1000;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  left:12px;
+  right:12px;
+  background:rgba(255,255,255,.96);
+  border-radius:18px;
+  padding:15px;
+  color:#302B50;
+  max-height:45vh;
+  overflow-y:auto;
+}
+
+.status {
+  font-size:13px;
+  color:#665C82;
+  margin-bottom:10px;
+}
+
+.buttons {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.buttons button {
+  background:#EEE8FA;
+  border:1px solid #DCCBFF;
+  border-radius:9px;
+  padding:10px;
+  color:#51447D;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.buttons button.active {
+  background:#8B72D4;
+  color:white;
+}
+
+#explanation {
+  background:#F3F0FF;
+  border-radius:12px;
+  padding:12px;
+  margin-top:12px;
+  line-height:1.5;
+  font-size:14px;
+}
+
+#explanation h3 {
+  margin:0 0 7px;
+  color:#51447D;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">✦ AR Studio Education</div>
+  <a href="dashboard.html">Dashboard</a>
+</header>
+
+<div class="panel">
+  <div class="status" id="status">
+    Allow camera access and scan your diagram.
+  </div>
+
+  <div class="buttons">
+    <button data-topic="sunlight">☀️ Sunlight</button>
+    <button data-topic="water">💧 Water</button>
+    <button data-topic="carbon">🌬️ CO₂</button>
+    <button data-topic="glucose">🌱 Glucose</button>
+    <button data-topic="oxygen">🫧 Oxygen</button>
+  </div>
+
+  <div id="explanation" aria-live="polite">
+    <h3>How photosynthesis works</h3>
+    <p>
+      Scan the diagram, then tap a topic
+      to explore the process.
+    </p>
+  </div>
+</div>
+
+<a-scene
+  id="scene"
+  mindar-image="imageTargetSrc: ./assets/photosynthesis.mind; autoStart: true;"
+  embedded
+  renderer="colorManagement: true; alpha: true; antialias: true;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false">
+
+  <a-camera
+    position="0 0 0"
+    look-controls="enabled: false">
+  </a-camera>
+
+  <a-entity
+    id="target"
+    mindar-image-target="targetIndex: 0">
+
+    <!-- Central plant representation -->
+    <a-entity position="0 0 0.06">
+
+      <a-cylinder
+        position="0 -0.10 0"
+        radius="0.025"
+        height="0.48"
+        color="#40965F">
+      </a-cylinder>
+
+      <a-sphere
+        position="-0.16 0.08 0"
+        scale="2 0.65 0.35"
+        radius="0.13"
+        color="#61C784">
+      </a-sphere>
+
+      <a-sphere
+        position="0.16 0.16 0"
+        scale="2 0.65 0.35"
+        radius="0.13"
+        color="#45AE71">
+      </a-sphere>
+
+    </a-entity>
+
+    <!-- Sunlight label -->
+    <a-text
+      value="SUNLIGHT"
+      position="-0.35 0.37 0.12"
+      width="1.15"
+      align="center"
+      color="#FFD05B">
+    </a-text>
+
+    <!-- Sunlight moving toward plant -->
+    <a-sphere
+      position="-0.35 0.27 0.12"
+      radius="0.045"
+      material="color:#FFD05B;shader:flat"
+      animation="property:position;
+      from:-0.35 0.27 0.12;
+      to:-0.06 0.10 0.12;
+      dur:1800;
+      loop:true">
+    </a-sphere>
+
+    <!-- Water label -->
+    <a-text
+      value="WATER"
+      position="-0.32 -0.35 0.12"
+      width="1.1"
+      align="center"
+      color="#73D9FF">
+    </a-text>
+
+    <a-sphere
+      radius="0.04"
+      material="color:#73D9FF;shader:flat"
+      animation="property:position;
+      from:-0.28 -0.29 0.12;
+      to:0 -0.08 0.12;
+      dur:2000;
+      loop:true">
+    </a-sphere>
+
+    <!-- Carbon dioxide label -->
+    <a-text
+      value="CO2"
+      position="0.34 -0.12 0.12"
+      width="1"
+      align="center"
+      color="#DCCBFF">
+    </a-text>
+
+    <a-sphere
+      radius="0.04"
+      material="color:#B49BF5;shader:flat"
+      animation="property:position;
+      from:0.33 -0.07 0.12;
+      to:0.06 0.09 0.12;
+      dur:2200;
+      loop:true">
+    </a-sphere>
+
+    <!-- Oxygen released -->
+    <a-text
+      value="OXYGEN"
+      position="0.34 0.38 0.12"
+      width="1.1"
+      align="center"
+      color="#C5FFF0">
+    </a-text>
+
+    <a-sphere
+      radius="0.04"
+      material="color:#9DF2DC;shader:flat"
+      animation="property:position;
+      from:0.12 0.14 0.12;
+      to:0.34 0.32 0.12;
+      dur:1900;
+      loop:true">
+    </a-sphere>
+
+    <!-- Glucose product -->
+    <a-plane
+      position="0 -0.40 0.12"
+      width="0.42"
+      height="0.12"
+      material="color:#DCCBFF;shader:flat;side:double">
+    </a-plane>
+
+    <a-text
+      value="GLUCOSE"
+      position="0 -0.40 0.14"
+      width="1"
+      align="center"
+      color="#302B50">
+    </a-text>
+
+  </a-entity>
+</a-scene>
+
+<script>
+const statusBox=document.getElementById("status");
+const target=document.getElementById("target");
+const explanation=document.getElementById("explanation");
+
+const lessons={
+  sunlight:{
+    title:"☀️ Sunlight",
+    text:"Chlorophyll in the leaves absorbs light energy. This energy powers photosynthesis."
+  },
+  water:{
+    title:"💧 Water",
+    text:"Roots absorb water from the soil. Water travels through the stem to the leaves."
+  },
+  carbon:{
+    title:"🌬️ Carbon Dioxide",
+    text:"Carbon dioxide enters the leaves through tiny openings called stomata."
+  },
+  glucose:{
+    title:"🌱 Glucose",
+    text:"The plant produces glucose, a sugar that stores chemical energy and supports growth."
+  },
+  oxygen:{
+    title:"🫧 Oxygen",
+    text:"Oxygen is produced during photosynthesis and is released from the leaves."
+  }
+};
+
+target.addEventListener("targetFound",()=>{
+  statusBox.textContent=
+    "✨ Diagram detected! Explore the animated labels.";
+});
+
+target.addEventListener("targetLost",()=>{
+  statusBox.textContent=
+    "Point your camera back at the diagram.";
+});
+
+document.querySelectorAll("[data-topic]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const lesson=lessons[button.dataset.topic];
+
+    document.querySelectorAll("[data-topic]")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    explanation.replaceChildren();
+
+    const heading=document.createElement("h3");
+    heading.textContent=lesson.title;
+
+    const paragraph=document.createElement("p");
+    paragraph.textContent=lesson.text;
+
+    explanation.append(heading,paragraph);
+  });
+});
+</script>
+
+</body>
+</html>
