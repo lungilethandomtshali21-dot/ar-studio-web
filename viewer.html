@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+<title>AR Studio | Live AR Camera</title>
+
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+<style>
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#F8FBFF;
+}
+
+.topbar {
+  position:fixed;
+  top:12px;
+  left:12px;
+  right:12px;
+  z-index:1000;
+  background:rgba(248,251,255,.94);
+  border:1px solid #DCCBFF;
+  border-radius:16px;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  pointer-events:none;
+}
+
+.brand {
+  color:#51447D;
+  font-size:17px;
+  font-weight:bold;
+}
+
+.back {
+  background:#A78BFA;
+  color:white;
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:9px;
+  font-size:13px;
+  pointer-events:auto;
+}
+
+.status {
+  position:fixed;
+  bottom:22px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:1000;
+  background:#F0E8FF;
+  color:#51447D;
+  padding:14px 20px;
+  border-radius:14px;
+  font-size:14px;
+  text-align:center;
+  width:min(90%,400px);
+  pointer-events:none;
+}
+
+a-scene {
+  position:fixed;
+  inset:0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="brand">✦ AR Studio</div>
+  <a class="back" href="dashboard.html">
+    Dashboard
+  </a>
+</div>
+
+<div id="status" class="status">
+  Allow camera access, then point at
+  the sample tracking image.
+</div>
+
+<a-scene
+  mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: true;"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+  embedded
+>
+  <a-camera
+    position="0 0 0"
+    look-controls="enabled: false">
+  </a-camera>
+
+  <a-entity
+    id="imageTarget"
+    mindar-image-target="targetIndex: 0">
+
+    <a-box
+      position="0 0 0.2"
+      width="0.35"
+      height="0.35"
+      depth="0.35"
+      color="#A78BFA"
+      animation="property: rotation;
+                 to: 0 360 360;
+                 loop: true;
+                 dur: 5000;
+                 easing: linear">
+    </a-box>
+
+    <a-sphere
+      position="0.35 0.2 0.1"
+      radius="0.12"
+      color="#DCEFFF"
+      animation="property: position;
+                 to: 0.35 0.4 0.1;
+                 dir: alternate;
+                 loop: true;
+                 dur: 1500">
+    </a-sphere>
+
+    <a-text
+      value="AR STUDIO"
+      align="center"
+      color="#7455BB"
+      position="0 -0.35 0.1"
+      width="1.8">
+    </a-text>
+
+  </a-entity>
+</a-scene>
+
+<script>
+const statusBox = document.getElementById("status");
+const target = document.getElementById("imageTarget");
+
+target.addEventListener("targetFound", () => {
+  statusBox.textContent =
+    "✨ Image detected! Your AR experience is active.";
+});
+
+target.addEventListener("targetLost", () => {
+  statusBox.textContent =
+    "Move your camera back toward the sample image.";
+});
+</script>
+
+</body>
+</html>
